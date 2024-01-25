@@ -1,7 +1,7 @@
-import "./App.css";
+import Router from "./shard/router";
 
 function App() {
-  return <div></div>;
+  return <Router />;
 }
 
 export default App;
