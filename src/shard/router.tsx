@@ -6,6 +6,8 @@ import WritePage from "@/pages/WritePage";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
+import Login from "@/pages/Login";
+import Join from "@/pages/Join";
 
 const Router = () => {
   return (
@@ -18,6 +20,8 @@ const Router = () => {
         </Route>
         <Route path="/" element={<Home />} />
         <Route path="noticeboard" element={<NoticeBoard />} />
+        <Route path="login" element={<Login />} />
+        <Route path="join" element={<Join />} />
       </Routes>
     </BrowserRouter>
   );
