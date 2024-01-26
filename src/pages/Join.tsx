@@ -1,7 +1,7 @@
-import { useState } from "react";
+import JoinForm from "@/components/auth/JoinForm";
 
 const Join = () => {
-  return <>join</>;
+  return <JoinForm />;
 };
 
 export default Join;
