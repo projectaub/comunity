@@ -1,19 +1,10 @@
+import { useState } from "react";
+import { initialValues, initialValuesForm } from "./JoinForm";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
-export interface initialValuesForm {
-  email: string;
-  password: string;
-}
-
-export const initialValues: initialValuesForm = {
-  email: "",
-  password: "",
-};
-
-const JoinForm = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState<initialValuesForm>(initialValues);
 
@@ -24,15 +15,14 @@ const JoinForm = () => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
-
-  const Signup = async () => {
-    await createUserWithEmailAndPassword(auth, values.email, values.password);
+  const Login = async () => {
+    await signInWithEmailAndPassword(auth, values.email, values.password);
   };
 
   return (
     <>
       <form onSubmit={onSubmit}>
-        이 메 일:
+        로그인 이 메 일:
         <input
           style={{ border: "solid" }}
           value={values.email}
@@ -40,20 +30,20 @@ const JoinForm = () => {
           onChange={(e) => handleChange("email", e.target.value)}
         />
         <br />
-        패스워드:
+        로그인 패스워드:
         <input
           style={{ border: "solid" }}
           value={values.password}
           type="password"
           onChange={(e) => handleChange("password", e.target.value)}
         />
-        <button style={{ border: "solid" }} onClick={Signup}>
-          Join
+        <button style={{ border: "solid" }} onClick={Login}>
+          Login
         </button>
-        <button onClick={() => navigate("/login")}>Join 으로</button>
+        <button onClick={() => navigate("/join")}>Join 으로</button>
       </form>
     </>
   );
 };
 
-export default JoinForm;
+export default LoginForm;
