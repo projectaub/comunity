@@ -1,7 +1,8 @@
 import { auth } from "@/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useValidation from "./useValidation";
 
 export interface initialValuesForm {
   email: string;
@@ -16,13 +17,18 @@ export const initialValues: initialValuesForm = {
 const JoinForm = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState<initialValuesForm>(initialValues);
-
+  const { validatePassword } = useValidation();
   const handleChange = (key: string, value: string | number) => {
     setValues({ ...values, [key]: value });
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const passwordValidationResult = validatePassword(values.password);
+    if (passwordValidationResult) {
+      alert(passwordValidationResult);
+      return;
+    }
   };
 
   const Signup = async () => {

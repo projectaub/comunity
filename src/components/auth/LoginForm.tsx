@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { initialValues, initialValuesForm } from "./JoinForm";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { getUser } from "@/api/User";
+import { User, useUserinfo } from "@/store/useUsers";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [values, setValues] = useState<initialValuesForm>(initialValues);
-
+  const userInfo: any = useUserinfo();
   const handleChange = (key: string, value: string | number) => {
     setValues({ ...values, [key]: value });
   };
@@ -15,8 +17,11 @@ const LoginForm = () => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
+  // 로그인
   const Login = async () => {
     await signInWithEmailAndPassword(auth, values.email, values.password);
+    const user = await getUser(values.email);
+    userInfo.setUser(user);
   };
 
   return (
