@@ -1,18 +1,50 @@
+import { auth } from "@/firebase";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export interface User {
+interface ProviderData {
+  providerId: string;
+  uid: string;
+  displayName: string | null;
+  email: string;
+  phoneNumber: string | null;
+  // 필요한 다른 속성들을 여기에 추가할 수 있습니다.
+}
+
+export interface StsTokenManager {
+  accessToken: string;
+  expirationTime: number;
+  refreshToken: string;
+}
+
+export interface CurrentUser {
   email: string;
   nickname: string;
   greetings: string;
+  apiKey: string;
+  appName: string;
+  createdAt: string;
+  emailVerified: boolean;
+  isAnonymous: boolean;
+  lastLoginAt: string;
+  providerData: ProviderData[];
+  stsTokenManager: StsTokenManager;
+  uid: string;
 
-  setUser: (user: User) => void;
+  setUser: (user: CurrentUser) => void;
 }
 
-export const useUserinfo = create((set) => ({
-  user: {
-    email: "",
-    nickname: "",
-    greetings: "",
-  },
-  setUser: (user: User) => set({ user }),
-}));
+export const useUserinfo = create(
+  persist(
+    (set) => ({
+      login: false,
+      users: auth.currentUser?.uid,
+      loginUser: [],
+      setLogin: (login: boolean) => set({ login }),
+      setLoginUser: (LoginUser: any) => set({ LoginUser }),
+    }),
+    {
+      name: "userinfo-storage", // 로컬 스토리지 키 이름
+    }
+  )
+);

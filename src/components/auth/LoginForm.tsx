@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { initialValues, initialValuesForm } from "./JoinForm";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { useNavigate } from "react-router-dom";
-import { getUser } from "@/api/User";
-import { User, useUserinfo } from "@/store/useUsers";
+import { DocumentData, collection, getDocs, query } from "firebase/firestore";
+import { useUserinfo } from "@/store/useUsers";
+
+// import { getUser } from "@/api/User";
+// import { User, useUserinfo } from "@/store/useUsers";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { setLoginUser } = useUserinfo() as {
+    setLoginUser: (LoginUser: any) => void;
+  };
   const [values, setValues] = useState<initialValuesForm>(initialValues);
-  const userInfo: any = useUserinfo();
+  // const userInfo: any = useUserinfo();
   const handleChange = (key: string, value: string | number) => {
     setValues({ ...values, [key]: value });
   };
@@ -20,9 +26,23 @@ const LoginForm = () => {
   // 로그인
   const Login = async () => {
     await signInWithEmailAndPassword(auth, values.email, values.password);
-    const user = await getUser(values.email);
-    userInfo.setUser(user);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const q: any = query(collection(db, "users"));
+      const querySnapshot = await getDocs(q);
+      const initialdata: DocumentData[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = {
+          id: doc.id,
+          ...(doc.data() as DocumentData),
+        };
+        initialdata.push(data);
+      });
+      setLoginUser(initialdata);
+    };
+    fetchData();
+  }, []);
 
   return (
     <>

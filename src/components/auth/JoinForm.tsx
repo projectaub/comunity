@@ -1,25 +1,44 @@
-import { auth } from "@/firebase";
+import { auth, db, storage } from "@/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidation from "./useValidation";
+import { addDoc, collection } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 export interface initialValuesForm {
   email: string;
   password: string;
+  nickname: string;
+  greetings: string;
 }
 
 export const initialValues: initialValuesForm = {
   email: "",
   password: "",
+  nickname: "",
+  greetings: "",
 };
-
+//P@ssw0rd1!
 const JoinForm = () => {
   const navigate = useNavigate();
+  const emptyBlob = new Blob();
   const [values, setValues] = useState<initialValuesForm>(initialValues);
+  const [selectedFile, setSelectedFile] = useState<
+    Blob | Uint8Array | ArrayBuffer
+  >(emptyBlob);
   const { validatePassword } = useValidation();
-  const handleChange = (key: string, value: string | number) => {
+  const handleChange = (key: string, value: string | null | File) => {
     setValues({ ...values, [key]: value });
+  };
+  const imgHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+  const imgHandleUpload = async () => {
+    const imageRef = ref(storage, `${auth.currentUser?.uid}/${selectedFile}`);
+    await uploadBytes(imageRef, selectedFile);
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +52,23 @@ const JoinForm = () => {
 
   const Signup = async () => {
     await createUserWithEmailAndPassword(auth, values.email, values.password);
+    await addUserInfo();
+    await imgHandleUpload();
+    navigate("/login");
+  };
+
+  const addUserInfo = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        email: values.email,
+        nickname: values.nickname,
+        greetings: values.greetings,
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
   return (
@@ -52,6 +88,29 @@ const JoinForm = () => {
           value={values.password}
           type="password"
           onChange={(e) => handleChange("password", e.target.value)}
+        />
+        <br />
+        별 명:
+        <input
+          style={{ border: "solid" }}
+          value={values.nickname}
+          type="text"
+          onChange={(e) => handleChange("nickname", e.target.value)}
+        />
+        <br />
+        인사말:
+        <input
+          style={{ border: "solid" }}
+          value={values.greetings}
+          type="text"
+          onChange={(e) => handleChange("greetings", e.target.value)}
+        />
+        <br />
+        프로필사진:
+        <input
+          style={{ border: "solid" }}
+          type="file"
+          onChange={imgHandleChange}
         />
         <button style={{ border: "solid" }} onClick={Signup}>
           Join
