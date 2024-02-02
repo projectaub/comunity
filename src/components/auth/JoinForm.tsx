@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useValidation from "./useValidation";
 import { addDoc, collection } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useUserinfo } from "@/store/useUsers";
+
+interface UserInfo {
+  photoURL: string;
+  setPhotoURL: (url: string) => void;
+}
 
 export interface initialValuesForm {
   email: string;
@@ -19,16 +25,16 @@ export const initialValues: initialValuesForm = {
   nickname: "",
   greetings: "",
 };
+
 //P@ssw0rd1!
 const JoinForm = () => {
   const navigate = useNavigate();
-  const emptyBlob = new Blob();
   const [values, setValues] = useState<initialValuesForm>(initialValues);
-  const [selectedFile, setSelectedFile] = useState<
-    Blob | Uint8Array | ArrayBuffer
-  >(emptyBlob);
+  const { setPhotoURL } = useUserinfo() as UserInfo;
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+
   const { validatePassword } = useValidation();
-  const handleChange = (key: string, value: string | null | File) => {
+  const handleChange = (key: string, value: string | null) => {
     setValues({ ...values, [key]: value });
   };
   const imgHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +43,13 @@ const JoinForm = () => {
     }
   };
   const imgHandleUpload = async () => {
-    const imageRef = ref(storage, `${auth.currentUser?.uid}/${selectedFile}`);
+    const imageRef = ref(
+      storage,
+      `${auth.currentUser?.uid}/${selectedFile.name}`
+    );
     await uploadBytes(imageRef, selectedFile);
+    const downloadURL = await getDownloadURL(imageRef);
+    return downloadURL;
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,17 +63,19 @@ const JoinForm = () => {
 
   const Signup = async () => {
     await createUserWithEmailAndPassword(auth, values.email, values.password);
-    await addUserInfo();
-    await imgHandleUpload();
+    const downloadURL = await imgHandleUpload();
+    setPhotoURL(downloadURL);
+    await addUserInfo(downloadURL);
     navigate("/login");
   };
 
-  const addUserInfo = async () => {
+  const addUserInfo = async (photoURL: string) => {
     try {
       const docRef = await addDoc(collection(db, "users"), {
         email: values.email,
         nickname: values.nickname,
         greetings: values.greetings,
+        photoURL: photoURL,
       });
 
       console.log("Document written with ID: ", docRef.id);
@@ -70,6 +83,7 @@ const JoinForm = () => {
       console.error("Error adding document: ", e);
     }
   };
+  console.log(selectedFile);
 
   return (
     <>

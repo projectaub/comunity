@@ -1,4 +1,3 @@
-import { auth } from "@/firebase";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -38,10 +37,15 @@ export const useUserinfo = create(
   persist(
     (set) => ({
       login: false,
-      users: auth.currentUser?.uid,
-      loginUser: [],
+      nowUsers: [],
+      LoginUser: [],
+      photoURL: "",
+      selectUser: "",
       setLogin: (login: boolean) => set({ login }),
-      setLoginUser: (LoginUser: any) => set({ LoginUser }),
+      setLoginUser: (LoginUser?: any) => set({ LoginUser }),
+      setCurrentUser: (nowUsers?: any) => set({ nowUsers }),
+      setPhotoURL: (photoURL?: string) => set({ photoURL }),
+      setSelectUser: (selectUser?: string) => set({ selectUser }),
     }),
     {
       name: "userinfo-storage", // 로컬 스토리지 키 이름

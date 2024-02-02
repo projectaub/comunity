@@ -1,7 +1,5 @@
 // import { db } from "@/firebase";
-// import { doc, getDoc } from "firebase/firestore";
-
-// export const getUser = async (email: string) => {
-//   const docRef = doc(db, "users", email);
-//   const querySnapshot = await getDoc(docRef);
-// };
+// import { CurrentUser, useUserinfo } from "@/store/useUsers";
+// import { collection, getDocs } from "firebase/firestore";
+// const { users } = useUserinfo() as { users: CurrentUser };
+// const querySnapshot = await getDocs(collection(db, "users"));

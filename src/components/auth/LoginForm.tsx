@@ -3,19 +3,18 @@ import { initialValues, initialValuesForm } from "./JoinForm";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { useNavigate } from "react-router-dom";
-import { DocumentData, collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useUserinfo } from "@/store/useUsers";
 
-// import { getUser } from "@/api/User";
-// import { User, useUserinfo } from "@/store/useUsers";
-
+// P@ssw0rd1!
 const LoginForm = () => {
   const navigate = useNavigate();
   const { setLoginUser } = useUserinfo() as {
+    LoginUser: any;
     setLoginUser: (LoginUser: any) => void;
   };
   const [values, setValues] = useState<initialValuesForm>(initialValues);
-  // const userInfo: any = useUserinfo();
+
   const handleChange = (key: string, value: string | number) => {
     setValues({ ...values, [key]: value });
   };
@@ -25,24 +24,35 @@ const LoginForm = () => {
   };
   // 로그인
   const Login = async () => {
-    await signInWithEmailAndPassword(auth, values.email, values.password);
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      navigate("/");
+    } catch (error) {}
   };
+
   useEffect(() => {
     const fetchData = async () => {
-      const q: any = query(collection(db, "users"));
-      const querySnapshot = await getDocs(q);
-      const initialdata: DocumentData[] = [];
-      querySnapshot.forEach((doc) => {
-        const data = {
-          id: doc.id,
-          ...(doc.data() as DocumentData),
-        };
-        initialdata.push(data);
-      });
-      setLoginUser(initialdata);
+      try {
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+
+        const userData: any[] = [];
+        querySnapshot.forEach((doc) => {
+          userData.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+
+        setLoginUser(userData);
+        // 데이터를 loginUser 상태로 설정
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
     };
+
     fetchData();
-  }, []);
+  }, [setLoginUser]);
 
   return (
     <>
