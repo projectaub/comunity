@@ -7,7 +7,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useUserinfo } from "@/store/useUsers";
 
-interface UserInfo {
+export interface UserInfo {
   photoURL: string;
   setPhotoURL: (url: string) => void;
 }

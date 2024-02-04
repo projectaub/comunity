@@ -10,6 +10,7 @@ import Login from "@/pages/Login";
 import Join from "@/pages/Join";
 import AnotherUser from "@/pages/AnotherUser";
 import AnotherUserMyPage from "@/pages/AnotherUserMyPage";
+import NoticeBoardDetail from "@/pages/NoticeBoardDetail";
 
 const Router = () => {
   return (
@@ -23,7 +24,8 @@ const Router = () => {
           <Route path="anotherclick" element={<AnotherUserMyPage />} />
         </Route>
         <Route path="/" element={<Home />} />
-        <Route path="noticeboard" element={<NoticeBoard />} />
+        <Route path="board" element={<NoticeBoard />} />
+        <Route path="board/:id" element={<NoticeBoardDetail />} />
         <Route path="login" element={<Login />} />
         <Route path="join" element={<Join />} />
       </Routes>
