@@ -11,6 +11,7 @@ import Join from "@/pages/Join";
 import AnotherUser from "@/pages/AnotherUser";
 import AnotherUserMyPage from "@/pages/AnotherUserMyPage";
 import NoticeBoardDetail from "@/pages/NoticeBoardDetail";
+import NoticeBoardUpdate from "@/pages/NoticeBoardUpdate";
 
 const Router = () => {
   return (
@@ -22,6 +23,7 @@ const Router = () => {
           <Route path="writepage" element={<WritePage />} />
           <Route path="another" element={<AnotherUser />} />
           <Route path="anotherclick" element={<AnotherUserMyPage />} />
+          <Route path="board/:id/update" element={<NoticeBoardUpdate />} />
         </Route>
         <Route path="/" element={<Home />} />
         <Route path="board" element={<NoticeBoard />} />

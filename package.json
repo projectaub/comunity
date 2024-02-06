@@ -20,6 +20,7 @@
     "lucide-react": "^0.314.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-file-drop": "^3.1.6",
     "react-router-dom": "^6.21.3",
     "short-unique-id": "^5.0.3",
     "shortid": "^2.2.16",

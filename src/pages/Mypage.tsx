@@ -32,6 +32,7 @@ const Mypage = () => {
     const curUserData = LoginUser.filter((item: any) => {
       return item.email === nowUsers?.email;
     });
+    console.log(curUserData);
 
     const updateRef = doc(db, "users", curUserData[0].id);
     await updateDoc(updateRef, { nickname: values.nickname });

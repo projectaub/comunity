@@ -1,5 +1,6 @@
 import { UserInfo } from "@/components/auth/JoinForm";
-import { auth, db, storage } from "@/firebase";
+import { db, storage } from "@/firebase";
+import { useBoards } from "@/store/useBoard";
 import { useUserinfo } from "@/store/useUsers";
 import MDEditor from "@uiw/react-md-editor";
 import { addDoc, collection } from "firebase/firestore";
@@ -10,8 +11,9 @@ import ShortUniqueId from "short-unique-id";
 
 const WritePage = () => {
   const { nowUsers }: any = useUserinfo();
+
   const boardId = new ShortUniqueId({ length: 10 });
-  boardId.rnd();
+  const imgID = boardId.rnd();
   console.log(boardId.rnd());
   const [title, setTitle] = useState<any>("제목을 입력해주세요.");
   const [selectedFile, setSelectedFile] = useState<any>(null);
@@ -26,7 +28,7 @@ const WritePage = () => {
   };
 
   const imgHandleUpload = async () => {
-    const imageRef = ref(storage, `${boardId.rnd()}/${selectedFile.name}`);
+    const imageRef = ref(storage, `${imgID}/${selectedFile.name}`);
     await uploadBytes(imageRef, selectedFile);
     const downloadURL = await getDownloadURL(imageRef);
     return downloadURL;
@@ -35,15 +37,15 @@ const WritePage = () => {
   const addBoard = async (photoURL: string) => {
     try {
       const docRef = await addDoc(collection(db, "board"), {
-        boardId: boardId.rnd(),
+        boardId: imgID,
         id: nowUsers.uid,
         title: title,
         contents: contents,
         photoURL: photoURL,
+        imgName: selectedFile.name,
       });
 
       navigate("/board");
-
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -53,6 +55,7 @@ const WritePage = () => {
   const uploadBoard = async () => {
     const downloadURL = await imgHandleUpload();
     setPhotoURL(downloadURL);
+
     await addBoard(downloadURL);
   };
 

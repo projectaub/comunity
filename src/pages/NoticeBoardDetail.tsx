@@ -1,13 +1,21 @@
-import React from "react";
 import { useBoards } from "@/store/useBoard";
 import { useUserinfo } from "@/store/useUsers";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const NoticeBoardDetail = () => {
-  const { boards }: any = useBoards();
+  const navigate = useNavigate();
+  const { boards, setBoardImg }: any = useBoards();
   const { nowUsers }: any = useUserinfo();
   let params = useParams();
-  console.log(params.id);
+  const boardID = boards.filter((items: any) => {
+    return items.boardId === params.id;
+  });
+  console.log(boardID[0]);
+  useEffect(() => {
+    setBoardImg(boardID[0]);
+  }, []);
+
   return (
     <>
       {boards
@@ -15,7 +23,21 @@ const NoticeBoardDetail = () => {
           return items.boardId === params.id;
         })
         .map((item: any) => {
-          return <div>{item.contents}</div>;
+          return (
+            <div>
+              <div>{item.contents}</div>
+              {nowUsers.uid === item.id && (
+                <button
+                  style={{ border: "solid" }}
+                  onClick={() => {
+                    navigate(`update`);
+                  }}
+                >
+                  수정
+                </button>
+              )}
+            </div>
+          );
         })}
     </>
   );
