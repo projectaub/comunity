@@ -1,6 +1,6 @@
 import { UserInfo } from "@/components/auth/JoinForm";
 import { db, storage } from "@/firebase";
-import { useBoards } from "@/store/useBoard";
+
 import { useUserinfo } from "@/store/useUsers";
 import MDEditor from "@uiw/react-md-editor";
 import { addDoc, collection } from "firebase/firestore";
@@ -11,7 +11,6 @@ import ShortUniqueId from "short-unique-id";
 
 const WritePage = () => {
   const { nowUsers }: any = useUserinfo();
-
   const boardId = new ShortUniqueId({ length: 10 });
   const imgID = boardId.rnd();
   console.log(boardId.rnd());
@@ -20,6 +19,19 @@ const WritePage = () => {
   const { setPhotoURL } = useUserinfo() as UserInfo;
   const [contents, setContents] = useState<any>("**내용을 입력해주세요.**");
   const navigate = useNavigate();
+
+  const currDate = new Date();
+  const formattedDay = currDate.toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const formattedTime = currDate.toLocaleString("ko-KR", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 
   const imgHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -43,6 +55,8 @@ const WritePage = () => {
         contents: contents,
         photoURL: photoURL,
         imgName: selectedFile.name,
+        day: formattedDay,
+        time: formattedTime,
       });
 
       navigate("/board");

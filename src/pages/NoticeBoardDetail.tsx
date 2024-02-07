@@ -11,7 +11,7 @@ const NoticeBoardDetail = () => {
   const boardID = boards.filter((items: any) => {
     return items.boardId === params.id;
   });
-  console.log(boardID[0]);
+
   useEffect(() => {
     setBoardImg(boardID[0]);
   }, []);
@@ -25,6 +25,7 @@ const NoticeBoardDetail = () => {
         .map((item: any) => {
           return (
             <div>
+              <img src={item.photoURL} />
               <div>{item.contents}</div>
               {nowUsers.uid === item.id && (
                 <button
