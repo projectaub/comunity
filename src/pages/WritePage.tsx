@@ -57,6 +57,7 @@ const WritePage = () => {
         imgName: selectedFile.name,
         day: formattedDay,
         time: formattedTime,
+        likes: 0,
       });
 
       navigate("/board");

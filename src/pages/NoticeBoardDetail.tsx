@@ -37,6 +37,7 @@ const NoticeBoardDetail = () => {
                   수정
                 </button>
               )}
+              <button style={{ border: "solid" }}>좋아요 버튼</button>
             </div>
           );
         })}

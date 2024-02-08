@@ -2,7 +2,7 @@ import { db, storage } from "@/firebase";
 import { useBoards } from "@/store/useBoard";
 
 import MDEditor from "@uiw/react-md-editor";
-import { doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import {
   deleteObject,
   getDownloadURL,
@@ -22,7 +22,7 @@ const NoticeBoardUpdate = () => {
   });
 
   const boardImgName = filter[0].imgName;
-  console.log(boardImgName);
+  console.log(boards);
   const [contents, setContents] = useState<any>(filter[0].contents);
   const [selectedFile, setSelectedFile] = useState<any>(null);
 
@@ -57,7 +57,7 @@ const NoticeBoardUpdate = () => {
   const updateBoard = async () => {
     const updateRef = doc(db, "board", filter[0].docId);
     await updateDoc(updateRef, { contents: contents });
-    navigate(`/board/${params.id}`);
+    navigate("/board");
   };
 
   const updateBoardHandler = async () => {
@@ -84,6 +84,12 @@ const NoticeBoardUpdate = () => {
       await updateBoard(); // 이미지 변경 없이 게시글만 업데이트
     }
   };
+  const delBoard = async () => {
+    const desertRef = ref(storage, `${filter[0].boardId}/${boardImgName}`);
+    await deleteObject(desertRef);
+    await deleteDoc(doc(db, "board", `${filter[0].docId}`));
+    navigate("/board");
+  };
 
   return (
     <>
@@ -101,6 +107,7 @@ const NoticeBoardUpdate = () => {
                 preview="edit"
                 height={500}
               />
+
               <button style={{ border: "solid" }} onClick={handleUpdateClick}>
                 수정하기
               </button>
@@ -109,7 +116,7 @@ const NoticeBoardUpdate = () => {
                 type="file"
                 onChange={imgHandleChange}
               />
-              <button onClick={delImg}>지우기</button>
+              <button onClick={delBoard}>지우기</button>
             </div>
           );
         })}
