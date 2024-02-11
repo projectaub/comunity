@@ -1,5 +1,5 @@
 import { UserInfo } from "@/components/auth/JoinForm";
-import { db, storage } from "@/firebase";
+import { auth, db, storage } from "@/firebase";
 
 import { useUserinfo } from "@/store/useUsers";
 import MDEditor from "@uiw/react-md-editor";
@@ -57,7 +57,6 @@ const WritePage = () => {
         imgName: selectedFile.name,
         day: formattedDay,
         time: formattedTime,
-        likes: 0,
       });
 
       navigate("/board");
