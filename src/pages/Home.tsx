@@ -1,10 +1,14 @@
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { useBoards } from "@/store/useBoard";
 import { useUserinfo } from "@/store/useUsers";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, getDocs, query } from "firebase/firestore";
 import { useEffect } from "react";
 
 const Home = () => {
   // 로그인 상태 확인을 위한전역상태 관리
+  const { boards, setBoards }: any = useBoards();
+  console.log(boards);
   const { setLogin, setCurrentUser } = useUserinfo() as {
     setCurrentUser: (Users: any) => void;
     setLogin: (login: boolean) => void;
@@ -20,6 +24,21 @@ const Home = () => {
         console.log("실패");
       }
     });
+
+    const getBoard = async () => {
+      const q = query(collection(db, "board"));
+      const querySnapshot = await getDocs(q);
+      const boardData: any = [];
+      querySnapshot.forEach((doc) => {
+        boardData.push({
+          docId: doc.id,
+
+          ...doc.data(),
+        });
+        setBoards(boardData);
+      });
+    };
+    getBoard();
     setCurrentUser(auth.currentUser);
   }, []);
 

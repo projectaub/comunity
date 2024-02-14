@@ -52,7 +52,7 @@ const NoticeBoard = () => {
             key={item.id}
             onClick={() => handleBoardClick(item.boardId)}
           >
-            <div>{item.title}</div>
+            <div key={item.id}>{item.title}</div>
             {item.photoURL && <img src={item.photoURL} alt={item.title} />}
           </button>
         );

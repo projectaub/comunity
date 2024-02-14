@@ -21,7 +21,7 @@ export interface initialValuesForm {
 
 export const initialValues: initialValuesForm = {
   email: "",
-  password: "",
+  password: "P@ssw0rd1!",
   nickname: "",
   greetings: "",
 };
