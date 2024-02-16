@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import ShortUniqueId from "short-unique-id";
 
 const WritePage = () => {
-  const { nowUsers }: any = useUserinfo();
+  const { nowUsers, LoginUser }: any = useUserinfo();
   const boardId = new ShortUniqueId({ length: 10 });
   const imgID = boardId.rnd();
   console.log(boardId.rnd());
@@ -19,6 +19,8 @@ const WritePage = () => {
   const { setPhotoURL } = useUserinfo() as UserInfo;
   const [contents, setContents] = useState<any>("**내용을 입력해주세요.**");
   const navigate = useNavigate();
+  console.log(LoginUser);
+  console.log(nowUsers);
 
   const currDate = new Date();
   const formattedDay = currDate.toLocaleString("ko-KR", {

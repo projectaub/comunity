@@ -5,7 +5,6 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import _debounce from "lodash/debounce";
-import debounce from "lodash/debounce";
 const NoticeBoardDetail = () => {
   const navigate = useNavigate();
   const { boards, setBoardImg }: any = useBoards();

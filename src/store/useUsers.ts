@@ -41,6 +41,7 @@ export const useUserinfo = create(
       LoginUser: [],
       photoURL: "",
       selectUser: "",
+
       setLogin: (login: boolean) => set({ login }),
       setLoginUser: (LoginUser?: any) => set({ LoginUser }),
       setCurrentUser: (nowUsers?: any) => set({ nowUsers }),
